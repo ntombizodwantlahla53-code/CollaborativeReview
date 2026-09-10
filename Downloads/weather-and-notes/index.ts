@@ -73,7 +73,28 @@ function saveUserLog(userName: string, userEmail: string, callback: (error: Erro
 
 fetchUserId((error, userId) =>{
     if(error){
-        console.error("error fetching userI", error.message)
-        return
+        console.error("error fetching user Id", error.message)
+        return;
+    }
+    if (userId){
+        fetchUserDetails(userId, (error, details) =>{
+            if(error){
+                console.log("error fetching user details", error.message)
+                 return;
+            }
+        
+    if (details){
+        saveUserLog(details.name, details.email, (error, logStatus) =>{
+            if(error){
+                console.log("error is saving user details", error.message)
+                 return;
+            }
+            if(logStatus){
+                console.log("all operations completed successfully")
+                console.log("final status:", logStatus)
+            }
+            })
+            }
+        })
     }
 })

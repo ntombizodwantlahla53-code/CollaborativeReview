@@ -3,8 +3,12 @@ import * as projectService from "./../service/projectService"
 
 export const addProject = async (req: Request, res:Response) => {
     try {
+        if (!req.user) {
+        return res.status(401).json({ message: "jnn" });
+    }
         const newProject = await projectService.createProject(
-            req.body);
+            req.body,
+        req.user.id);
         res.status(201).json(newProject);
     } catch (error) {
         res.status(500).json({ message: "Error in creating projects"});
@@ -13,7 +17,10 @@ export const addProject = async (req: Request, res:Response) => {
 
 export const getAllprojects = async (req: Request, res: Response) => {
     try {
-        const projects = await projectService.findAllProjects();
+        if (!req.user) {
+        return res.status(401).json({ message: "jnn" });
+    }
+        const projects = await projectService.findAllProjects(req.user.id);
         res.status(200).json(projects);
     } catch (error) {
         res.status(500).json({ message: "Error retreiving applications"});
@@ -23,8 +30,11 @@ export const getAllprojects = async (req: Request, res: Response) => {
 
 export const getProjectById = async (req: Request, res: Response) => {
     try {
-        const project_id = parseInt(req.params.id as string, 10)
-        const project = await projectService.findProjectById(project_id)
+        if (!req.user) {
+        return res.status(401).json({ message: "jnn" });
+    }
+        const project_id = parseInt(req.params.project_id as string, 10)
+        const project = await projectService.findProjectById(project_id, req.user.id)
         if(!project){
             return res.status(404).json({ message: "Project not found"})
         }
@@ -36,8 +46,11 @@ export const getProjectById = async (req: Request, res: Response) => {
 
 export const updateProjectById = async (req:Request, res:Response) =>{
     try{
-        const project_id = parseInt(req.params.id as string, 10)
-        const updateProject = await projectService.updateProject(project_id, req.body)
+        if (!req.user) {
+        return res.status(401).json({ message: "jnn" });
+    }
+        const project_id = parseInt(req.params.project_id as string, 10)
+        const updateProject = await projectService.updateProject(project_id, req.body, req.user.id)
         if(!updateProject){
             return res.status(404).json({ message: "Projectn not found"})
         }
@@ -49,8 +62,11 @@ export const updateProjectById = async (req:Request, res:Response) =>{
 
 export const deleteProjectById = async (req:Request, res: Response) =>{
     try{
-      const project_id = parseInt(req.params.id as string, 10);
-    const deleteProject = await projectService.deleteProject(project_id);
+        if (!req.user) {
+        return res.status(401).json({ message: "jnn" });
+    }
+      const project_id = parseInt(req.params.project_id as string, 10);
+    const deleteProject = await projectService.deleteProject(project_id, req.user.id);
       if(!deleteProject){
             return res.status(404).json({ message: "Project not found"})
         }

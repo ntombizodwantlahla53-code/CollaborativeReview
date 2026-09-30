@@ -5,4 +5,4 @@ export interface Project {
     Created_at: Date
 };
 
-export type NewProject = Omit<Project, 'project_id' | 'Created_at'>
+export type NewProject = Omit<Project, 'project_id' | 'Created_at' | 'user_id'>

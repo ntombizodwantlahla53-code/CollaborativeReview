@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import {textDbConnection} from "./config/database"
 import projectRoutes from "./routes/projectRoutes"
 import authRoutes from "./routes/authRoutes"
+// import protectMembersRoutes from "./routes/protectMembersRoutes"
 
 dotenv.config();
 
@@ -12,8 +13,9 @@ const PORT = process.env.PORT || 5000;
 const startServer = async () => {
     await textDbConnection();
 app.use(express.json());
-app.use('/api/auth', authRoutes)
+app.use('/api/auth', authRoutes);
 app.use('/api',projectRoutes);
+// app.use('/api', protectMembersRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)

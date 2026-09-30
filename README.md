@@ -22,3 +22,5 @@ ADD CONSTRAINT fk_user
 FOREIGN KEY (user_id)
 REFERENCES users(id)
 ON DELETE CASCADE;
+select members_id = array_append(member_id,$1)
+where id=$2

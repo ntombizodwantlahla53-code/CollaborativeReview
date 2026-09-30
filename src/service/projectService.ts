@@ -52,4 +52,4 @@ export const deleteProject = async (
         [project_id, user_id]
     );
     return rows[0] || null;
-}
+};

@@ -16,7 +16,7 @@ export const findAllProjects = async(
     user_id:number
 ) : Promise<Project[]> =>{
     const {rows} = await query(
-        "SELECT * FROM projects ORDER BY applied_at DESC",  [user_id]
+        "SELECT * FROM projects ORDER BY Created_at DESC",  [user_id]
     );
     return rows;
 };

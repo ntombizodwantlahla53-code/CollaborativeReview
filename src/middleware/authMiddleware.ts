@@ -5,7 +5,8 @@ import { User } from "../types/user.types"
 
 interface JwtPayload {
   userId: number,
-  email: string
+  email: string,
+  role: "Submitter" | "Reviewer"
 }
 
 export const protect = async (

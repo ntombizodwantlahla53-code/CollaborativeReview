@@ -9,14 +9,15 @@ export const findUserByEmail = async (email: string): Promise<User | null> => {
 
 export const createUser = async (
   email: string,
-  password: string
+  password: string,
+  role: "submitter" | "reviewer" = "submitter"
 ): Promise<User> => {
   const salt = await bcrypt.genSalt(10);
   const password_hash = await bcrypt.hash(password, salt);
 
   const { rows } = await query(
-    "INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, email",
-    [email, password_hash]
+    "INSERT INTO users (email, password_hash, role) VALUES ($1, $2, $3) RETURNING id, email, role",
+    [email, password_hash, role]
   );
   return rows[0];
 };

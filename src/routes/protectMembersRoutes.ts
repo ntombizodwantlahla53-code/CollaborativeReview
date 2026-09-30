@@ -1,12 +1,12 @@
-// import { Router } from "express";
-// import {addProjectMembers , deleteProjectMembers} from "../controllers/projectMembersControllers"
-// import { protect } from "../middleware/authMiddleware"
+import { Router } from "express";
+import {addProjectMembers , deleteProjectMembers} from "../controllers/projectMembersControllers"
+import { protect } from "../middleware/authMiddleware"
 
-// const router = Router();
+const router = Router();
 
-// router.use(protect)
+router.use(protect)
 
-// router.post('/projects/:id/members', addProjectMembers);
-// router.get('/projects/:id/members', deleteProjectMembers);
+router.post('/projects/:project_id/members', addProjectMembers);
+router.delete('/projects/:project_id/members/:userId', deleteProjectMembers);
 
-// export default router;
+export default router;

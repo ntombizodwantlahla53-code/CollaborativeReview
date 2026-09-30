@@ -4,8 +4,7 @@ import * as projectService from "./../service/projectService"
 export const addProject = async (req: Request, res:Response) => {
     try {
         const newProject = await projectService.createProject(
-            req.body,
-            req.user!.id);
+            req.body);
         res.status(201).json(newProject);
     } catch (error) {
         res.status(500).json({ message: "Error in creating projects"});

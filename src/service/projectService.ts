@@ -3,11 +3,10 @@ import { Project, NewProject } from "../types/project.types";
 
 export const createProject = async (
     appData: NewProject,
-    userId: number
 ): Promise<Project> =>{
-    const {title, user_id} = appData
-    const {rows} = await query("INSERT INTO projects (title, user_id, user_id) VALUES ($1, $2, $3, $4) RETURNING *",
-        [title, user_id, userId]
+    const {title} = appData
+    const {rows} = await query("INSERT INTO projects (title) VALUES ($1) RETURNING *",
+        [title]
     );
     return rows[0];
 };

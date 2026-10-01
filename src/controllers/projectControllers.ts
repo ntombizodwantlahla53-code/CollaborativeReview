@@ -20,8 +20,8 @@ export const getAllprojects = async (req: Request, res: Response) => {
         if (!req.user) {
         return res.status(401).json({ message: "jnn" });
     }
-        const projects = await projectService.findAllProjects(req.user.id);
-        res.status(200).json(projects);
+        const project = await projectService.findAllProjects(req.user.id);
+        res.status(200).json(project);
     } catch (error) {
         res.status(500).json({ message: "Error retreiving applications"});
 

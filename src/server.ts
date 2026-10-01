@@ -4,6 +4,7 @@ import {textDbConnection} from "./config/database"
 import projectRoutes from "./routes/projectRoutes"
 import authRoutes from "./routes/authRoutes"
 import protectMembersRoutes from "./routes/protectMembersRoutes"
+import submissionRoutes from "./routes/submissionRoutes"
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api',projectRoutes);
 app.use('/api', protectMembersRoutes);
+app.use('/api', submissionRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)

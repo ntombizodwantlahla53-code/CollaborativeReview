@@ -18,7 +18,6 @@ export const AddProjectMembers = async (
     if (userRole.toLowerCase() !== "reviewer") {
         throw new Error("Only reviewers can be added as project members");
     }
-
     const { rows } = await query(
         `UPDATE projects
          SET members_id = array_append(members_id, $1)

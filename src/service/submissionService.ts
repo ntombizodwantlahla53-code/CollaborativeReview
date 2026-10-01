@@ -4,9 +4,9 @@ import { Submission, NewSubmission } from "../types/submission.types";
 export const createSubmission = async (
     appData: NewSubmission
 ): Promise<Submission> => {
-    const { project_id } = appData;
-    const { rows } = await query(`INSERT INTO submissions (project_id) VALUES ($1) RETURNING *`,
-        [project_id]
+    const { project_id ,code} = appData;
+    const { rows } = await query(`INSERT INTO submissions (project_id, code) VALUES ($1, $2) RETURNING *`,
+        [project_id, code]
     );
     return rows[0];
 };

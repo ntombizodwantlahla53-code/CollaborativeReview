@@ -78,12 +78,8 @@ export const deleteSubmission = async (
     res: Response
 ) => {
     try {
-        const submission_id = parseInt(req.params.id as string,10
-        );
-
-        const submission =
-            await submissionService.deleteSubmission(submission_id);
-
+        const submission_id = parseInt(req.params.id as string,10);
+        const submission = await submissionService.deleteSubmission(submission_id);
         if (!submission) {
             return res.status(404).json({ message: "Submission not found"
             });

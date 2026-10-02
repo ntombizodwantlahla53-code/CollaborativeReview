@@ -7,4 +7,4 @@ export interface Comment {
     created_at : Date
 };
 
-export type NewComment = Omit<Comment, 'comment_id' | 'Created_at'>
+export type NewComment = Omit<Comment, 'comment_id' | 'created_at'>

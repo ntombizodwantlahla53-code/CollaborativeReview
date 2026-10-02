@@ -8,8 +8,8 @@ router.use(protect)
 
 
 router.post('/submissions', addSubmission);
-router.get('/projects/:id/submissions', getSubmissionById);
-router.get('/submissions/:id', getSubmissionsByProject);
+router.get('/projects/:id/submissions', getSubmissionsByProject);
+router.get('/submissions/:id', getSubmissionById);
 router.put('/submissions/:id/status', updateSubmissionStatus);
 router.delete('/submissions/:id', deleteSubmission);
 

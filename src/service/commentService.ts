@@ -36,7 +36,7 @@ export const updateComment = async (
     line_number: number | null
 ): Promise<Comment | null> => {
     const { rows } = await query(
-        `UPDATE submissions
+        `UPDATE comments
          SET comment = $1, line_number =$2
          WHERE comment_id = $2
          RETURNING *`,

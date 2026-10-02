@@ -83,3 +83,27 @@ ALTER TABLE submissions
 ADD CONSTRAINT submission_status_check
     CHECK (status IN ('pending','in_review', 'approved', 'changes_requested'));
 	
+
+
+CREATE TABLE comments (
+comment_id SERIAL PRIMARY KEY NOT NULL,
+submission_id INT NOT NULL,
+user_id INT NOT NULL,
+comment TEXT NOT NULL,
+line_number INT,
+created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE comments
+ADD CONSTRAINT fk_submission
+FOREIGN KEY (submission_id)
+REFERENCES submissions(submission_id)
+ON DELETE CASCADE;
+
+ALTER TABLE comments
+ADD CONSTRAINT fk_user
+FOREIGN KEY (user_id)
+REFERENCES users(id)
+ON DELETE CASCADE;
+
+

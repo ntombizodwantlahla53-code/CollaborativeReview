@@ -107,3 +107,21 @@ REFERENCES users(id)
 ON DELETE CASCADE;
 
 
+CREATE TABLE reviews (
+    review_id SERIAL PRIMARY KEY,
+    submission_id INT NOT NULL,
+    user_id INT NOT NULL,
+    status VARCHAR(30) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+	);
+ALTER TABLE reviews
+ADD CONSTRAINT fk_submission
+    FOREIGN KEY (submission_id)
+        REFERENCES submissions(submission_id)
+        ON DELETE CASCADE;
+ALTER TABLE reviews
+ADD CONSTRAINT fk_user
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+;

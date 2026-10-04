@@ -5,6 +5,8 @@ import projectRoutes from "./routes/projectRoutes"
 import authRoutes from "./routes/authRoutes"
 import protectMembersRoutes from "./routes/protectMembersRoutes"
 import submissionRoutes from "./routes/submissionRoutes"
+import commentRoutes from "./routes/commentRoutes"
+import reviewRoutes from "./routes/reviewRoutes"
 
 dotenv.config();
 
@@ -18,6 +20,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api',projectRoutes);
 app.use('/api', protectMembersRoutes);
 app.use('/api', submissionRoutes);
+app.use('/api', commentRoutes);
+app.use('/api', reviewRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)

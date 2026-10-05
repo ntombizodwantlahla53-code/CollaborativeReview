@@ -99,3 +99,173 @@ put .*env on .gitignore file and put *node_modules so that your env will not go 
 
 ## 5. Database Tables
 
+Create the database tables on your PGAdmin ,in the following order because the tables have relationships with each other:
+
+### 5.1 Users
+
+```sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+```
+Add user roles:
+```sql
+ALTER TABLE users
+ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'Submitter';
+
+ALTER TABLE users
+ADD CONSTRAINT users_role_check
+CHECK (role IN ('Submitter', 'Reviewer'));
+```
+
+### 5.2 Projects
+
+```sql
+CREATE TABLE projects (
+    project_id SERIAL PRIMARY KEY NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+Connect projects to users:
+
+```sql
+ALTER TABLE projects
+ADD CONSTRAINT fk_user
+FOREIGN KEY (user_id)
+REFERENCES users(id)
+ON DELETE CASCADE;
+```
+Add project members:
+```sql
+ALTER TABLE projects
+ADD COLUMN members_id INT[] DEFAULT '{}';
+```
+
+### 5.3 Submissions
+
+```sql
+CREATE TABLE submissions (
+    submission_id SERIAL PRIMARY KEY NOT NULL,
+    code TEXT NOT NULL,
+    project_id INT NOT NULL,
+    status VARCHAR(50) NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+```
+Connect submissions to projects:
+
+```sql
+ALTER TABLE submissions
+ADD CONSTRAINT fk_submission_project
+FOREIGN KEY (project_id)
+REFERENCES projects(project_id)
+ON DELETE CASCADE;
+```
+Add submission status rules:
+
+```sql
+ALTER TABLE submissions
+ADD CONSTRAINT submission_status_check
+CHECK (
+    status IN ('pending','in_review','approved','changes_requested')
+);
+```
+
+### 5.4 Comments
+
+```sql
+CREATE TABLE comments (
+    comment_id SERIAL PRIMARY KEY NOT NULL,
+    submission_id INT NOT NULL,
+    user_id INT NOT NULL,
+    comment TEXT NOT NULL,
+    line_number INT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+```
+Connect comments to submissions:
+
+```sql
+ALTER TABLE comments
+ADD CONSTRAINT fk_submission
+FOREIGN KEY (submission_id)
+REFERENCES submissions(submission_id)
+ON DELETE CASCADE;
+```
+Connect comments to users:
+```sql
+ALTER TABLE comments
+ADD CONSTRAINT fk_user
+FOREIGN KEY (user_id)
+REFERENCES users(id)
+ON DELETE CASCADE;
+```
+
+### 5.5 Reviews
+
+```sql
+CREATE TABLE reviews (
+    review_id SERIAL PRIMARY KEY,
+    submission_id INT NOT NULL,
+    user_id INT NOT NULL,
+    status VARCHAR(30) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+```
+Connect reviews to submissions:
+
+```sql
+ALTER TABLE reviews
+ADD CONSTRAINT fk_submission
+FOREIGN KEY (submission_id)
+REFERENCES submissions(submission_id)
+ON DELETE CASCADE;
+```
+Connect reviews to users:
+
+```sql
+ALTER TABLE reviews
+ADD CONSTRAINT fk_user
+FOREIGN KEY (user_id)
+REFERENCES users(id)
+ON DELETE CASCADE;
+```
+
+## 6. Run the Application
+
+Run the development server with:
+```bash
+npm run dev
+```
+
+## 7. Test the API with Postman
+
+The API endpoints are tested using **Postman**.
+First register a user and then log in:
+
+```text
+POST /api/auth/register
+POST /api/auth/login
+```
+After login, copy the JWT token returned by the API.
+
+## For protected endpoints, use the following authorization header in Postman:
+```text
+Authorization: Bearer YOUR_JWT_TOKEN
+```
+The API can then be tested in Postman for:
+
+# 1 Authentication
+# 2 Users
+# 3 Projects
+# 4 Project members
+# 5 Code submissions
+# 6 Comments
+# 7 Reviews
+

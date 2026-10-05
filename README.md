@@ -1,130 +1,101 @@
+## CollaborativeReview
+
 <img src="https://socialify.git.ci/ntombizodwantlahla53-code/CollaborativeReview/image?language=1&owner=1&name=1&stargazers=1&theme=Light" alt="CollaborativeReview" width="640" height="320" />
 
+## Project Description
+```
+The Collaborative Code Review Platform is a REST API that allows developers and teams to submit code for review and collaborate through comments and feedback. Users can create projects, submit code, assign reviewers, add comments to submissions, and manage the review process.
+The platform uses authentication and role-based access control to help manage permissions between Submitters and Reviewers. It also tracks submission statuses and review history to provide a structured code review process.
+
+```
+## 1. Project Setup
+
+Clone the repository and open the project folder:
+```bash
+git clone https://github.com/ntombizodwantlahla53-code/CollaborativeReview.git
+cd CollaborativeReview
+```
+
+## 2. Install Dependencies
+Install all project dependencies from `package.json`:
+```bash
+npm install
+
 npm init -y
+
+The project uses:
+* Express
+* PostgreSQL (`pg`)
+* dotenv
+* JSON Web Token (`jsonwebtoken`)
+* bcryptjs
+* TypeScript
+* ts-node
+* Nodemon
+* tsx
+
+put these 1by1 on your terminal to install dependencies:
+
 npm i express pg dotenv
 npm i -D typescript ts-node nodemon @types/node @types/express @types/pg
 npx tsc –init
-
-//for auth.user install jsonwebtoken
 npm i jsonwebtoken bcryptjs
 npm i -D @types/jsonwebtoken @types/bcryptjs
+npm i tsx --save-dev
 
-CREATE TABLE projects (
-project_id SERIAL PRIMARY KEY NOT NULL,
-title VARCHAR(255) NOT NULL,
-user_id INT NOT NULL,
-created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
+```
 
-CREATE TABLE users (
-id SERIAL PRIMARY KEY,
-email VARCHAR(255) UNIQUE NOT NULL,
-password_hash VARCHAR(255) NOT NULL,
-created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
+## 3. TypeScript Setup
 
-ALTER TABLE projects
-ADD CONSTRAINT fk_user
-FOREIGN KEY (user_id)
-REFERENCES users(id)
-ON DELETE CASCADE;
+The project uses TypeScript and includes a `tsconfig.json` configuration file.|
+here is what should be on your tsconfig.json.
 
-ALTER TABLE projects
-ADD COLUMN members_id INT[] DEFAULT '{}';
+```
+{
+"compilerOptions": {
+"target": "ES2022",
+"module": "NodeNext",
+"moduleResolution": "NodeNext",
+"esModuleInterop": true,
+"strict": true,
+"outDir": "./dist",
+"rootDir": "./src",
+"noEmit": true
 
-select members_id = array_append(member_id,$1)
-where id=$2
+  },
+"include": ["src/**/*"],
+"files": ["src/types/express.d.ts"]
+}
 
-ALTER TABLE users
-ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'Submitter';
+Also on your package.json inside change scripts and put this one :
 
-ALTER TABLE users
-ADD CONSTRAINT users_role_check
-CHECK (role IN ('Submitter', 'Reviewer'));
+"scripts": {
+    "build": "tsc",
+    "start": "ts-node src/server.ts",
+    "dev": " nodemon --exec npx tsx src/server.ts"}
+```
 
-DB_USER= postgres DB_HOST=localhost DB_DATABASE=code-review DB_PASSWORD=...... DB_PORT=5432 PORT=3000
+## 4. PostgreSQL Database Setup
 
-JWT_SECRET= this-key-is-very-secret
+Create a PostgreSQL database for the project.
 
-CREATE TABLE submissions (
-    submission_id SERIAL PRIMARY KEY,
-    project_id INT NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'pending',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+## The application uses the following environment variables to connect to PostgreSQL:
 
-    CONSTRAINT fk_submission_project
-    FOREIGN KEY (project_id)
-    REFERENCES projects(project_id)
-    ON DELETE CASCADE,
+```.env
+DB_USER=postgres
+DB_HOST=localhost
+DB_DATABASE=CollaborativeReview
+DB_PASSWORD=your_database_password
+DB_PORT=5432
+PORT=3000
 
-    CONSTRAINT submission_status_check
-    CHECK (status IN ('pending', 'approved', 'rejected'))
-);
-const { rows } = await query(
-        `UPDATE projects
-         SET members_id = array_append(members_id, $1)
-         WHERE project_id = $2
-         AND NOT ($1 = ANY(members_id)) //PREVENT ADDING THAT same userid twice
-         RETURNING *`,)[user_id, project_id]
+JWT_SECRET=your_secret_key
+```
 
+Create a `.env` file in the root of the project and add your own database password and JWT secret.
 
+Do not upload the `.env` file to GitHub. CREATE (.gitignore) file then 
+put .*env on .gitignore file and put *node_modules so that your env will not go to you github when you push your task to github.
 
-         CREATE TABLE submissions (
-    submission_id SERIAL PRIMARY KEY NOT NULL,
-	code TEXT NOT NULL,
-	project_id INT NOT NULL,
-    status VARCHAR(50) NOT NULL DEFAULT 'pending',
-	created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-	);
-ALTER TABLE submissions
-ADD CONSTRAINT fk_submission_project
-    FOREIGN KEY (project_id)
-    REFERENCES projects(project_id)
-    ON DELETE CASCADE;
-ALTER TABLE submissions
-ADD CONSTRAINT submission_status_check
-    CHECK (status IN ('pending','in_review', 'approved', 'changes_requested'));
-	
-
-
-CREATE TABLE comments (
-comment_id SERIAL PRIMARY KEY NOT NULL,
-submission_id INT NOT NULL,
-user_id INT NOT NULL,
-comment TEXT NOT NULL,
-line_number INT,
-created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
-ALTER TABLE comments
-ADD CONSTRAINT fk_submission
-FOREIGN KEY (submission_id)
-REFERENCES submissions(submission_id)
-ON DELETE CASCADE;
-
-ALTER TABLE comments
-ADD CONSTRAINT fk_user
-FOREIGN KEY (user_id)
-REFERENCES users(id)
-ON DELETE CASCADE;
-
-
-CREATE TABLE reviews (
-    review_id SERIAL PRIMARY KEY,
-    submission_id INT NOT NULL,
-    user_id INT NOT NULL,
-    status VARCHAR(30) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-	);
-ALTER TABLE reviews
-ADD CONSTRAINT fk_submission
-    FOREIGN KEY (submission_id)
-        REFERENCES submissions(submission_id)
-        ON DELETE CASCADE;
-ALTER TABLE reviews
-ADD CONSTRAINT fk_user
-    FOREIGN KEY (user_id)
-        REFERENCES users(id)
-        ON DELETE CASCADE
-;
+## 5. Database Tables
 
